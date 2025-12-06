@@ -1,0 +1,363 @@
+/* --- 基本設定 --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", sans-serif;
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #10284b;
+}
+.signage-container {
+    width: 1080px;
+    height: 1920px;
+    background-color: #fff;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================================
+   1. ヘッダーエリア（レイアウト変更）
+   ========================================= */
+.top-header { 
+    height: 180px; 
+    width: 100%; 
+    padding: 20px 30px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; /* 両端と中央に配置 */
+    gap: 10px; 
+}
+
+/* --- 時計ウィジェット（レイアウト変更後） --- */
+.clock-widget { 
+    flex-shrink: 0; 
+    background-color: #F2C94C; 
+    border-radius: 12px; 
+    padding: 0 25px;
+    display: flex; 
+    align-items: center;
+    color: #fff; 
+    height: 95px; 
+    gap: 16px; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+    font-family: "Roboto", sans-serif;
+    font-weight: bold;
+}
+#current-date { font-family: "Roboto", sans-serif; font-size: 32px; line-height: 1; }
+#current-day { font-family: "Roboto", sans-serif; font-size: 20px; line-height: 1; margin-left: -8px; }
+#current-time { font-family: "Roboto", sans-serif; font-size: 48px; line-height: 1; font-weight: bold; }
+.weather-icon { display: inline-flex; }
+.weather-icon img { width: 40px; height: 40px; object-fit: contain; }
+.temperature-display { font-family: "Roboto", sans-serif; font-size: 32px; font-weight: bold; line-height: 1; }
+
+/* --- 中央エリア（ロゴ＋テキスト）の新規スタイル --- */
+.header-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-logo { 
+    height: 45px; /* 少し調整 */
+    object-fit: contain; 
+    width: auto; 
+    max-width: 500px;
+    margin-bottom: 5px; /* テキストとの間隔 */
+}
+
+.qr-text { 
+    font-size: 16px; 
+    color: #71868F; 
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.qr-text .en-text {
+    font-size: 14px;
+    color: #71868F;
+    margin-left: 10px;
+    font-weight: normal;
+}
+
+/* --- 右側エリア（QRコード）の新規スタイル --- */
+.header-right-qr {
+    flex-shrink: 0;
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 10px;
+    /* 2枚目の画像の青い影を再現 */
+    box-shadow: 6px 6px 0px #A6DDF8; 
+    margin-right: 10px;
+    overflow: hidden;
+}
+
+.header-qr { 
+    width: 115px; 
+    height: 115px; 
+    display: block; 
+}
+
+/* 以前の .header-right クラスなどは削除または上書きされます */
+
+/* =========================================
+   2. メッセージエリア（変更禁止→そのまま）
+   ========================================= */
+.message-area { 
+    position: relative; 
+    width: 100%; 
+    height: 140px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+.message-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+.message-bg img { width: 100%; height: 100%; object-fit: cover; }
+.message-content { position: relative; z-index: 2; width: 90%; height: 100%; display: flex; align-items: center; gap: 30px; }
+.boat-icon { width: 80px; height: 80px; flex-shrink: 0; object-fit: contain; }
+.message-text {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.05em;
+    flex: 1;
+    text-align: left;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+
+/* =========================================
+   3. メインビジュアル（最適化）
+   ========================================= */
+.main-visual-section {
+    display: flex;
+    height: 424px;
+    padding: 20px 59px 20px 9px;
+    gap: 20px;
+}
+.main-banner-container {
+    width: 754px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.main-banner-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.side-movie-container {
+    width: 238px;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+.side-movie-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+
+/* =========================================
+   4. イベント情報ブロック
+   ========================================= */
+.info-section {
+    padding: 15px 50px 25px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.info-left {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    line-height: 1.2;
+    white-space: nowrap;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+.event-subtitle {
+    font-size: 28px;
+    font-weight: bold;
+    color: #118AD7;
+    margin-bottom: 28px;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.schedule-block { margin-bottom: 25px; }
+.date-image { height: 60px; width: 322px; margin-bottom: 15px; display: block; }
+
+.time-price-row { margin-bottom: 25px; }
+.info-text-large {
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 1.5;
+}
+.info-text-small { font-size: 20px; font-weight: bold; margin-left: 10px; }
+
+.price-row {
+    margin-top: 25px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.price-val { font-size: 28px; margin-right: 20px; }
+
+
+/* --- 特徴アイコン --- */
+.bottom-info-row { display: flex; justify-content: flex-start; margin-top: 10px; }
+
+.features-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: -25px;
+}
+.feature-card { width: 195px; display: flex; flex-direction: column; align-items: center; }
+.feature-icon { width: 100%; height: auto; max-height: 160px; object-fit: contain; }
+
+.feature-notes {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 70px;
+    width: 450px; /* 1行35文字程度になる幅 */
+    margin-left: -100px; /* 左にずらす */
+}
+
+
+/* --- 空席表 --- */
+.info-right-wrapper { display: flex; flex-direction: column; width: 252px; flex-shrink: 0; position: relative; top: 12px; }
+
+.info-right {
+    background-color: #F8F9FA;
+    border-radius: 6px;
+    padding: 25px 25px;
+    height: 293px;
+}
+.seat-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 10px; border-bottom: 2px solid #DDE2E6; padding-bottom: 8px;
+}
+.seat-title { font-size: 20px; font-weight: bold; color: #118AD7; }
+.seat-title-en { font-size: 15px; color: #118AD7; font-weight: bold; }
+
+.seat-list { display: flex; flex-direction: column; }
+.seat-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 10px; border-bottom: 1px solid #E5E5E5;
+}
+.seat-row:last-child { border-bottom: none; }
+
+.seat-date { font-size: 26px; font-weight: bold; }
+.status-mark { width: 40px; height: 40px; object-fit: contain; margin-right: 25px; }
+
+.bottom-info-row {
+    margin-top: 40px; width: 100%; font-size: 10px;
+    color: #555; line-height: 1.6; letter-spacing: .02em;
+}
+
+
+/* =========================================
+   5. おすすめエリア
+   ========================================= */
+.recommendation-section {
+    flex: 1;
+    background-color: #D1F1FD;
+    padding: 70px 50px 5px 50px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+}
+
+.rec-header-area {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+}
+.rec-main-title { font-size: 32px; font-weight: 600; color: #118AD7; position: relative; top: -50px; font-family: 'Noto Sans JP', sans-serif; }
+
+/* LINE誘導 */
+.line-wrapper { display: flex; align-items: center; gap: 15px; position: relative; top: -30px; }
+.line-bubble-group { display: flex; flex-direction: column; align-items: flex-end; }
+.line-cta {
+    background-color: #fff; padding: 12px 20px; border-radius: 6px;
+    box-shadow:   rgba(0,0,0,0.1);
+    margin-bottom: 4px; position: relative;
+}
+.line-cta::after {
+    content: ""; position: absolute; right: -8px; top: 50%; transform: translateY(-50%);
+    border-style: solid; border-width: 6px 0 6px 8px; border-color: transparent transparent transparent #fff;
+}
+.line-cta-text { font-size: 20px; font-weight: bold; color: #118AD7; }
+.line-msg { font-size: 16px; font-weight: bold; color: #10284b; text-align: right; margin-right: 8px; position: relative; top: 6px; }
+.line-cta-qr { height: 100px; width: 100px; }
+
+
+/* カード表示 */
+.rec-cards-container {
+    display: flex; gap: 30px;
+    position: relative;
+    top: -20px;
+}
+.rec-card {
+    flex: 1; background-color: #fff; border-radius: 8px;
+    overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    height: 375px;
+}
+.rec-card-img {
+    height: 218px;
+    width: 328px;
+    object-fit: contain;
+}
+.rec-card-body {
+    padding: 5px 15px; display: flex; flex-direction: column;
+}
+.rec-card-title { font-size: 16px; font-weight: bold; margin-bottom: 15px; line-height: 1.5; position: relative; top: 6px; }
+.rec-card-price {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.rec-card-price--offset-y {
+    position: relative;
+    top: 20px;
+}
+
+
+/* =========================================
+   6. フッター
+   ========================================= */
+.main-footer {
+    height: 110px; background-color: #fff;
+    display: flex; justify-content: space-between;
+    align-items: center; padding: 0 50px; border-top: 1px solid #eee;
+}
+.footer-text { font-size: 11px; color: #888; line-height: 1.4; max-width: 800px; }
+.footer-logo img { height: 48px; width: auto; }
+
+/* --- 左端のカードだけ価格の位置を特別に調整 --- */
+.first-card .rec-card-price {
+    margin-top: 10px !important;
+}

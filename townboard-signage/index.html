@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920, initial-scale=1.0">
+<title>Tokyo Cruise Signage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&family=Noto+Sans:wght@600&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="signage-container">
+
+<header class="top-header">
+        <div class="clock-widget">
+            <span id="current-date">--/--</span>
+            <span id="current-day" class="day-en">---</span>
+            <span id="current-time">--:--</span>
+            <div class="weather-icon">
+                <img src="./assets/WeatherSunny.png" alt="Weather">
+            </div>
+            <div class="temperature-display" id="current-temp">--°</div>
+        </div>
+        <div class="header-center">
+            <img src="./assets/TokyoCruiseLogo.png" class="header-logo" alt="Tokyo Cruise & Waterfront Trip">
+            <p class="qr-text">
+                クルーズのご予約はこちら <span class="en-text">Click here to book your cruise</span>
+            </p>
+        </div>
+        <div class="header-right-qr">
+            <img src="./assets/shibauraheaderQR.png" class="header-qr" alt="QR Code">
+        </div>
+        </header>
+
+    <div class="message-area">
+        <div class="message-bg"><img src="./assets/CommentBox.png" alt="Background"></div>
+        <div class="message-content">
+            <img src="./assets/BoatIcon.png" class="boat-icon" alt="icon">
+            <p class="message-text" id="dynamic-message">メッセージを読み込んでいます...</p>
+        </div>
+    </div>
+
+    <section class="main-visual-section">
+        <div class="main-banner-container">
+            <img src="./assets/Tokyo Bay Night Cruis - 2025 Winter サムネ 1.png" alt="Tokyo Bay Night Cruise 2025 Winter">
+        </div>
+        <div class="side-movie-container">
+            <video autoplay loop muted playsinline>
+                <source src="./assets/Beercruise.mp4" type="video/mp4">
+            </video>
+        </div>
+    </section>
+
+    <section class="info-section">
+        <div class="info-left">
+            <h1 class="event-title">Tokyo Bay Night Cruise - 2025 Winter</h1>
+            <h2 class="event-subtitle">レインボー花火＆クリスマスワインつき</h2>
+            
+            <div class="schedule-block">
+                <img src="./assets/Date.png" class="date-image" alt="12/6.13.20 SAT">
+                <div class="time-price-row">
+                    <p class="info-text-large">18:30~19:30 <span class="info-text-small">(18:30 竹芝出発→19:30 竹芝到着)</span></p>
+                    <p class="price-row">事前料金 <span class="price-val">¥7,000</span> 当日料金 <span class="price-val">¥8,000</span></p>
+                </div>
+            </div>
+
+            <div class="bottom-info-row">
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <img src="./assets/hanabi.png" class="feature-icon" alt="花火">
+                    </div>
+                    <div class="feature-card">
+                        <img src="./assets/musictake.png" class="feature-icon" alt="音楽">
+                    </div>
+                    <div class="feature-card">
+                        <img src="./assets/drinktake.png" class="feature-icon" alt="ドリンク">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-right-wrapper">
+            <div class="info-right">
+                <div class="seat-header">
+                    <span class="seat-title">空席状況</span>
+                    <span class="seat-title-en">SeatStatus</span>
+                </div>
+                <div class="seat-list">
+                    <div class="seat-row">
+                        <span class="seat-date">12/6</span>
+                        <img src="./assets/Status=SeatAvailable.png" class="status-mark" alt="○">
+                    </div>
+                    <div class="seat-row">
+                        <span class="seat-date">12/13</span>
+                        <img src="./assets/Status=SeatAvailable.png" class="status-mark" alt="○">
+                    </div>
+                    <div class="seat-row">
+                        <span class="seat-date">12/20</span>
+                        <img src="./assets/Status=SeatAvailable.png" class="status-mark" alt="○">
+                    </div>
+                </div>
+            </div>
+            <div class="feature-notes">
+                ※「お台場レインボー花火2025」は19:00より約5分間の開催です。<br><br>
+                ※荒天により中止する場合がございます。<br>&nbsp;&nbsp;&nbsp;詳細はクルーズ予約サイトにてご確認ください。
+            </div>
+        </div>
+    </section>
+
+    <section class="recommendation-section">
+        <div class="rec-header-area">
+            <h2 class="rec-main-title">その他おすすめコンテンツ</h2>
+            <div class="line-wrapper">
+                <div class="line-bubble-group">
+                    <div class="line-cta">
+                        <span class="line-cta-text">竹芝エリアマネジメント公式LINE</span>
+                    </div>
+                    <p class="line-msg">イベントなどさまざまな情報を発信してます！</p>
+                </div>
+                <img src="./assets/shibaurafooterQR.png" class="line-cta-qr" alt="LINE QR">
+            </div>
+        </div>
+        
+        <div class="rec-cards-container">
+            <div class="rec-card first-card">
+                <img src="./assets/RecImageB.png" class="rec-card-img" alt="Night Cruise">
+                <div class="rec-card-body">
+                    <h3 class="rec-card-title">港区×東京湾『歴史・文化・夜景と食事』で巡る 煌めきナイトクルーズ</h3>
+                    <p class="rec-card-price">一般：12000円 港区民割：9000円<br>Suien会員割： 9000円</p>
+                </div>
+            </div>
+            <div class="rec-card">
+                <img src="./assets/RecImageA.png" class="rec-card-img" alt="Eco Cruise">
+                <div class="rec-card-body">
+                    <h3 class="rec-card-title">東京モーニングエコクルーズ</h3>
+                    <p class="rec-card-price rec-card-price--offset-y">船のチャーター料金：¥33,000/隻（税込）<br>+ 朝食代金：¥5,000/人（税込） ※3歳以上</p>
+                </div>
+            </div>
+            <div class="rec-card">
+                <img src="./assets/RecImageB.png" class="rec-card-img" alt="Bar">
+                <div class="rec-card-body">
+                    <h3 class="rec-card-title">大人限定船上BAR</h3>
+                    <p class="rec-card-price rec-card-price--offset-y">¥5,000（税込）</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="main-footer">
+        <div class="footer-text">
+            <p>このメッセージは、クルーズポータルサイトを運営する horai が提供する自動生成システムによって作成されています。<br>
+            当日の天候や空き状況に応じて、最新のクルーズ情報をお届けします。</p>
+            <p class="en" style="font-size:10px; margin-top:3px;">Messages are automatically generated by horai, the operator of the Cruise Portal site, to deliver the latest cruise updates based on today's weather and availability.</p>
+        </div>
+        <div class="footer-logo"><img src="./assets/HoraiLogo.png" alt="horai"></div>
+    </footer>
+
+</div>
+
+<script>
+let currentTemperature = '--°';
+
+function updateClockAndTemp() {
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const date = now.getDate();
+    const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const day = days[now.getDay()];
+    const hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    document.getElementById('current-date').textContent = `${month}/${date}`;
+    document.getElementById('current-day').textContent = day;
+    document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+    document.getElementById('current-temp').textContent = currentTemperature;
+}
+
+const messageElement = document.getElementById('dynamic-message');
+async function updateMessageAndTemp() {
+    try {
+        const response = await fetch('/api/generate-message');
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        const newMessage = data.message;
+        currentTemperature = data.temperature;
+
+        messageElement.textContent = newMessage;
+
+        if (newMessage.length < 30) {
+            messageElement.classList.add('single-line');
+        } else {
+            messageElement.classList.remove('single-line');
+        }
+
+    } catch (error) {
+        console.error('Failed to fetch new message:', error);
+        messageElement.textContent = '気温は寒いですが風邪は穏やかなのでデッキの上で大会楽しみましょう。気温は寒いですが風邪は穏やかなのでデッキの上で大会楽しみましょう。１行の場合は中央揃いになっています';
+        currentTemperature = '--°';
+    }
+}
+
+updateClockAndTemp();
+updateMessageAndTemp();
+setInterval(updateClockAndTemp, 1000);
+setInterval(updateMessageAndTemp, 600000); // 10分間隔に変更
+
+async function updateSeatStatus() {
+    console.log('Updating seat status...');
+    try {
+        const response = await fetch('/api/seat-status');
+        if (!response.ok) throw new Error('Network response was not ok for seat status');
+        const seatData = await response.json();
+
+        // HTML内の空席状況の行を取得
+        const seatRows = document.querySelectorAll('.seat-list .seat-row');
+
+        seatRows.forEach(row => {
+            const dateElement = row.querySelector('.seat-date');
+            const statusImg = row.querySelector('.status-mark');
+            
+            if (dateElement && statusImg) {
+                const displayDate = dateElement.textContent.trim(); // "12/6" など
+                
+                // APIデータから対応する日付の情報を探す
+                const correspondingSlot = seatData.find(slot => slot.date === displayDate);
+
+                if (correspondingSlot) {
+                    const percentage = correspondingSlot.remainingPercentage;
+                    let newStatusImgSrc = './assets/Status=SeatFull.png'; // デフォルトは満席(×)
+
+                    if (percentage >= 30) {
+                        newStatusImgSrc = './assets/Status=SeatAvailable.png'; // (○)
+                    } else if (percentage > 0) {
+                        newStatusImgSrc = './assets/Status=SeatLimited.png'; // (△)
+                    }
+                    
+                    statusImg.src = newStatusImgSrc;
+                    statusImg.alt = percentage >= 30 ? '○' : (percentage > 0 ? '△' : '×');
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error('Failed to fetch seat status:', error);
+    }
+}
+
+// 初期読み込み
+updateSeatStatus();
+// 定期的に更新 (例: 10分ごと)
+setInterval(updateSeatStatus, 600000);
+</script>
+</body>
+</html>
