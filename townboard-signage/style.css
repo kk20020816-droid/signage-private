@@ -92,6 +92,7 @@ body {
     background-color: #fff;
     padding: 8px;
     border-radius: 10px;
+    border: 1px solid #cccccc;
     
     /* 2枚目の画像の青い影を再現 */
     box-shadow: 6px 6px 0px #A6DDF8; 
