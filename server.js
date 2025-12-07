@@ -1,80 +1,213 @@
-
 require('dotenv').config();
 const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const axios = require('axios');
 
 const app = express();
 const port = 3000;
 
-// APIキーを環境変数から取得
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// フロントエンドのファイル（index.htmlやassetsフォルダ）を配信するための設定
 app.use(express.static(__dirname));
 
-// メッセージ生成APIのエンドポイント
+// --- おすすめのレストランリスト（施設・ジャンル情報付き） ---
+const restaurantList = [
+    { name: "BANK30", facility: "アトレ竹芝", cuisine: "バー・ダイニング" },
+    { name: "SHAKOBA", facility: "アトレ竹芝", cuisine: "コミュニティスペース" },
+    { name: "Bluefin by UORIKI", facility: "アトレ竹芝", cuisine: "和食・寿司" },
+    { name: "劇団四季SHOP&DINING 四季食堂", facility: "アトレ竹芝", cuisine: "カフェ・ダイニング" },
+    { name: "PAPPAGALLO", facility: "アトレ竹芝", cuisine: "イタリアン" },
+    { name: "CIELITO LINDO BAR AND GRILL", facility: "東京ポートシティ竹芝", cuisine: "メキシカン" },
+    { name: "餃子酒場 龍記", facility: "東京ポートシティ竹芝", cuisine: "中華・餃子" },
+    { name: "鍛冶屋文蔵", facility: "東京ポートシティ竹芝", cuisine: "居酒屋・和食" },
+    { name: "沖縄酒場かふー", facility: "東京ポートシティ竹芝", cuisine: "沖縄料理" },
+    { name: "串カツ田中", facility: "東京ポートシティ竹芝", cuisine: "串カツ・居酒屋" },
+    { name: "ど・みそ", facility: "東京ポートシティ竹芝", cuisine: "ラーメン" },
+    { name: "うみまち酒場 さかなさま", facility: "東京ポートシティ竹芝", cuisine: "海鮮居酒屋" },
+    { name: "GOOD LUCK CURRY", facility: "東京ポートシティ竹芝", cuisine: "カレー" },
+    { name: "イタリア酒場 HIKAGE", facility: "東京ポートシティ竹芝", cuisine: "イタリアン" },
+    { name: "シュマッツ・ビア・ダイニング", facility: "東京ポートシティ竹芝", cuisine: "ドイツ料理" },
+    { name: "サイアムセラドン", facility: "東京ポートシティ竹芝", cuisine: "タイ料理" },
+    { name: "梅蘭", facility: "東京ポートシティ竹芝", cuisine: "中華料理" },
+    { name: "博多天ぷらたかお", facility: "東京ポートシティ竹芝", cuisine: "天ぷら・和食" }
+];
+
+// --- 天気情報のキャッシュ設定 ---
+let weatherCache = { data: null, lastFetched: 0 };
+const CACHE_DURATION_MS = 60 * 60 * 1000; // 60分に変更
+
+async function getWeatherData() {
+    const now = Date.now();
+    if (weatherCache.data && (now - weatherCache.lastFetched < CACHE_DURATION_MS)) {
+        console.log('Using cached weather data.');
+        return weatherCache.data;
+    }
+    console.log('Fetching new weather data from OpenWeatherMap (Free Plan)...');
+    
+    const LAT = '35.6586'; // 竹芝の緯度
+    const LON = '139.7675'; // 竹芝の経度
+    const API_KEY = process.env.OPENWEATHER_API_KEY;
+    // 無料プランで利用可能なAPIエンドポイントに変更
+    const OPENWEATHER_API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&appid=${API_KEY}&units=metric&lang=ja`;
+
+    if (!API_KEY) {
+        console.error('OpenWeatherMap API key is not set.');
+        return { weather: '晴れ', temperature: '15°' };
+    }
+
+    try {
+        const response = await axios.get(OPENWEATHER_API_URL);
+        const current = response.data;
+        const weatherData = {
+            // データ構造が少し違うため、アクセス方法を修正
+            weather: current.weather[0].description, 
+            temperature: `${Math.round(current.main.temp)}°`
+        };
+        weatherCache = { data: weatherData, lastFetched: now };
+        console.log(`Successfully fetched data. Weather: "${weatherData.weather}", Temp: ${weatherData.temperature}`);
+        return weatherData;
+    } catch (error) {
+        console.error('Failed to fetch weather data from OpenWeatherMap.', error.message);
+        if (error.response && (error.response.status === 401 || error.response.status === 429)) {
+            console.error(`API Error: ${error.response.data.message}`);
+        }
+        console.log('Using default weather data.');
+        return { weather: '晴れ', temperature: '15°' };
+    }
+}
+
+// OpenWeatherMapを使う場合、この関数は不要になるが、念のため残しておく
+function translateWeatherCode(code) {
+    // この関数はOpen-Meteo用だったので、OpenWeatherMapでは基本的に不要
+    return '不明';
+}
+
 app.get('/api/generate-message', async (req, res) => {
-    console.log('[/api/generate-message] Received a request.'); // この行を追加
+    console.log('[/api/generate-message] Received a request.');
     try {
         const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-        // --- AIへの指示に必要な情報を収集 ---
         const now = new Date();
         const hours = now.getHours();
-        const timeOfDay = getTimeOfDay(hours); // 朝、昼、夜などを取得
+        const timeOfDay = getTimeOfDay(hours);
+        console.log(`Server time check: Current hour is detected as ${hours}.`);
+        const { weather, temperature } = await getWeatherData();
+        
+        let basePrompt = `
+あなたは東京湾クルーズのデジタルサイネージに表示するメッセージを生成するコンテンツクリエイターです。
+乗客の心に寄り添い、期待感を高めるような、魅力的で簡潔なメッセージを1つだけ生成してください。
 
-        // 仮の天気情報（将来的には天気APIから取得）
-        const weather = "晴れ";
-        const temperature = "15℃";
-
-        // --- プロンプトの作成 ---
-        const prompt = `
-あなたはデジタルサイネージのコンテンツクリエーターです。
-以下の状況に合わせた、船のクルーズ客に向けた魅力的で簡潔なメッセージを1つだけ生成してください。
-
-制約:
-- 2行以内で、最大50文字程度に収めてください。
-- 1行の場合は中央揃えで表示されるデザインです。
-- 親しみやすく、ポジティブなトーンでお願いします。
-- 事実に基づいた情報（天気、気温、時間帯）を自然に文章に含めてください。
-- 感嘆符(!)や絵文字は使わないでください。
-
-現在の状況:
-- 時間帯: ${timeOfDay} (${hours}時)
+# 現在の状況
+- 現在時刻: ${hours}時
+- 時間帯: ${timeOfDay}
 - 天気: ${weather}
-- 気温: ${temperature}
-
-メッセージ生成例:
-- 穏やかな風が心地よい昼下がりです。デッキで東京の景色を楽しみませんか。
-- 空気が澄んだ夜です。暖かい服装で美しい夜景をお楽しみください。
-
-それでは、メッセージを生成してください:
+- 現在の気温: ${temperature}
+`;
+        
+        let scenarioPrompt = `
+# メッセージ生成のシナリオと心構え
+以下に示す時間帯と天候の組み合わせに応じた「心構え」を深く理解し、現在の状況に最もふさわしい、気の利いたオリジナルメッセージを生成してください。
+---
+- **09:00 〜 12:00（朝）**: これから1日が始まるタイミング。今日の夜が楽しみになるようなメッセージを。
+- **12:00 〜 15:00（昼）**: 夜に向けて具体的な準備（防寒など）を優しく促す。
+- **15:00 〜 18:00（夕方）**: これから現地に向かう人へ、現場のリアルな情報を伝え、ワクワク感を高める。
+- **18:00 〜 21:00（夜）**: クルーズ直前〜終了後。サイトを見ている人へ向けたアピール。
+---
 `;
 
-        const result = await model.generateContent(prompt);
+        let constraintsPrompt = `
+# 制約
+- 2行以内、最大60文字程度で生成してください。
+- 親しみやすく、ポジティブなトーンでお願いします。
+- 感嘆符(!)や絵文字は使わないでください。
+- 必ず丁寧語を使用してください。タメ口や外国語は絶対に使わないでください。
+- **最重要**: 必ず現在の時間帯 (${timeOfDay}) に合ったメッセージを生成してください。
+`;
+
+        // 19時以降の場合、プロンプトを特別仕様に変更
+        if (hours >= 19) { // 本番用に修正
+            const restaurant = restaurantList[Math.floor(Math.random() * restaurantList.length)];
+            
+            scenarioPrompt = `
+# メッセージ生成のシナリオと心構え
+- 現在は${timeOfDay}です。クルーズの乗船ありがとうございました。
+- クルーズ後の素晴らしい締めくくりとして、付近の飲食店をおすすめし、乗客の満足度を高めるメッセージを生成します。
+- **推薦するお店**:
+  - 店名: ${restaurant.name}
+  - 施設名: ${restaurant.facility}
+  - ジャンル: ${restaurant.cuisine}
+- **お手本**: 「${restaurant.facility}の${restaurant.cuisine}『${restaurant.name}』で、クルーズの素敵な余韻に浸ってみてはいかがでしょうか。」
+- このお手本を参考に、**ジャンル情報も自然に含めつつ**、魅力的で簡潔な推薦メッセージを生成してください。
+`;
+            constraintsPrompt = `
+# 制約
+- 2行以内、最大70文字程度で生成してください。
+- 親しみやすく、ポジティブなトーンでお願いします。
+- 感嘆符(!)や絵文字は使わないでください。
+- 必ず丁寧語を使用してください。タメ口や外国語は絶対に使わないでください。
+- **最重要**: 必ず「店名」(${restaurant.name})と「施設名」(${restaurant.facility})の両方を文章に含めてください。省略は許可しません。
+
+# やってはいけないこと
+- **夜景や景色についての言及は絶対にしないでください。**
+`;
+        }
+
+        const finalPrompt = basePrompt + scenarioPrompt + constraintsPrompt + "\nそれでは、上記のすべてを考慮して、最高のメッセージを生成してください:";
+        
+        const result = await model.generateContent(finalPrompt);
         const response = await result.response;
         const text = response.text();
 
-        res.json({ message: text.trim() });
+        res.json({ 
+            message: text.trim(),
+            temperature: temperature // 気温データもレスポンスに含める
+        });
 
     } catch (error) {
-        console.error('--- DETAILED ERROR ---');
-        console.error('Error generating message:', error);
-        console.error('--- END OF ERROR ---');
-        res.status(500).json({ 
-            message: 'メッセージの生成に失敗しました。サーバーのログを確認してください。',
-            error: error.message 
-        });
+        console.error('--- DETAILED ERROR ---', error);
+        res.status(500).json({ message: 'メッセージの生成に失敗しました。', error: error.message });
     }
 });
 
-// 時間帯を返すヘルパー関数
 function getTimeOfDay(hours) {
     if (hours >= 5 && hours < 12) return '朝';
     if (hours >= 12 && hours < 17) return '昼';
     if (hours >= 17 && hours < 21) return '夜';
     return '深夜';
 }
+
+app.get('/api/seat-status', async (req, res) => {
+    console.log('[/api/seat-status] Received a request.');
+    const HORAI_API_URL = 'https://api-reservation-dot-horai-scheme-verge-v2.an.r.appspot.com/reservableItems/bd74f554-b2bf-492e-bbe2-548951110778/timeSlots/timeSlotsCountWithDate?from=2025-12-05T16%3A37%3A57-09%3A00&to=2026-06-03T16%3A37%3A57-09%3A00';
+
+    try {
+        const response = await axios.get(HORAI_API_URL);
+        const slots = response.data;
+
+        const processedSlots = slots.map(slot => {
+            const maxParticipants = slot.maximumTotalParticipants;
+            const currentParticipants = slot.peopleCount;
+            const remainingSeats = maxParticipants - currentParticipants;
+            
+            // 在庫が0の場合の割り算エラーを防ぐ
+            const remainingPercentage = maxParticipants > 0 ? (remainingSeats / maxParticipants) * 100 : 0;
+
+            // 日付のフォーマット (例: 12/6)
+            const date = new Date(slot.startAt);
+            const formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
+
+            return {
+                date: formattedDate,
+                remainingPercentage: remainingPercentage
+            };
+        });
+
+        res.json(processedSlots);
+
+    } catch (error) {
+        console.error('Failed to fetch seat status data.', error.message);
+        res.status(500).json({ message: '空席情報の取得に失敗しました。', error: error.message });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
