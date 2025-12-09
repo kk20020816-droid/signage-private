@@ -8,7 +8,7 @@ process.env.TZ = 'Asia/Tokyo'; // タイムゾーンを東京に設定
 const app = express();
 const port = 3000;
 
-const genAI = new GoogleGenerativeAI("AIzaSyAPNmfOCR_zxEMZmFclLyQCN7PXDd_g4d8");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.use(express.static(__dirname));
 
