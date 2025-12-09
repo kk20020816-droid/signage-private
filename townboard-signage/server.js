@@ -3,10 +3,12 @@ const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const axios = require('axios');
 
+process.env.TZ = 'Asia/Tokyo'; // タイムゾーンを東京に設定
+
 const app = express();
 const port = 3000;
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI("AIzaSyAPNmfOCR_zxEMZmFclLyQCN7PXDd_g4d8");
 
 app.use(express.static(__dirname));
 
@@ -46,7 +48,7 @@ async function getWeatherData() {
     
     const LAT = '35.6586'; // 竹芝の緯度
     const LON = '139.7675'; // 竹芝の経度
-    const API_KEY = process.env.OPENWEATHER_API_KEY;
+    const API_KEY = "12674ef4e2028cf0454766b9a946e9d9";
     // 無料プランで利用可能なAPIエンドポイントに変更
     const OPENWEATHER_API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&appid=${API_KEY}&units=metric&lang=ja`;
 
