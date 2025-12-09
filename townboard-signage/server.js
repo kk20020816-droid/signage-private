@@ -92,53 +92,25 @@ app.get('/api/generate-message', async (req, res) => {
         console.log(`Server time check: Current hour is detected as ${hours}.`);
         const { weather, temperature } = await getWeatherData();
         
+        const restaurant = restaurantList[Math.floor(Math.random() * restaurantList.length)];
+            
         let basePrompt = `
-あなたは東京湾クルーズのデジタルサイネージに表示するメッセージを生成するコンテンツクリエイターです。
-乗客の心に寄り添い、期待感を高めるような、魅力的で簡潔なメッセージを1つだけ生成してください。
-
-# 現在の状況
-- 現在時刻: ${hours}時
-- 時間帯: ${timeOfDay}
-- 天気: ${weather}
-- 現在の気温: ${temperature}
+あなたは東京湾クルーズのデジタルサイネージに表示するコンテンツクリエイターです。
+乗客のクルーズ体験をより豊かにするため、付近の魅力的な飲食店を提案するメッセージを生成してください。
 `;
         
         let scenarioPrompt = `
 # メッセージ生成のシナリオと心構え
-以下に示す時間帯と天候の組み合わせに応じた「心構え」を深く理解し、現在の状況に最もふさわしい、気の利いたオリジナルメッセージを生成してください。
----
-- **09:00 〜 12:00（朝）**: これから1日が始まるタイミング。今日の夜が楽しみになるようなメッセージを。
-- **12:00 〜 15:00（昼）**: 夜に向けて具体的な準備（防寒など）を優しく促す。
-- **15:00 〜 18:00（夕方）**: これから現地に向かう人へ、現場のリアルな情報を伝え、ワクワク感を高める。
-- **18:00 〜 21:00（夜）**: クルーズ直前〜終了後。サイトを見ている人へ向けたアピール。
----
-`;
-
-        let constraintsPrompt = `
-# 制約
-- 2行以内、最大60文字程度で生成してください。
-- 親しみやすく、ポジティブなトーンでお願いします。
-- 感嘆符(!)や絵文字は使わないでください。
-- 必ず丁寧語を使用してください。タメ口や外国語は絶対に使わないでください。
-- **最重要**: 必ず現在の時間帯 (${timeOfDay}) に合ったメッセージを生成してください。
-`;
-
-        // 19時以降の場合、プロンプトを特別仕様に変更
-        if (hours >= 19) { // 本番用に修正
-            const restaurant = restaurantList[Math.floor(Math.random() * restaurantList.length)];
-            
-            scenarioPrompt = `
-# メッセージ生成のシナリオと心構え
-- 現在は${timeOfDay}です。クルーズの乗船ありがとうございました。
-- クルーズ後の素晴らしい締めくくりとして、付近の飲食店をおすすめし、乗客の満足度を高めるメッセージを生成します。
+- クルーズ体験の前後に楽しめる素晴らしい食事場所として、付近の飲食店をおすすめし、乗客の満足度を高めるメッセージを生成します。
 - **推薦するお店**:
   - 店名: ${restaurant.name}
   - 施設名: ${restaurant.facility}
   - ジャンル: ${restaurant.cuisine}
-- **お手本**: 「${restaurant.facility}の${restaurant.cuisine}『${restaurant.name}』で、クルーズの素敵な余韻に浸ってみてはいかがでしょうか。」
+- **お手本**: 「クルーズの後は、${restaurant.facility}の${restaurant.cuisine}『${restaurant.name}』で、素敵な余韻に浸ってみてはいかがでしょうか。」
 - このお手本を参考に、**ジャンル情報も自然に含めつつ**、魅力的で簡潔な推薦メッセージを生成してください。
 `;
-            constraintsPrompt = `
+
+        let constraintsPrompt = `
 # 制約
 - 2行以内、最大70文字程度で生成してください。
 - 親しみやすく、ポジティブなトーンでお願いします。
@@ -147,9 +119,8 @@ app.get('/api/generate-message', async (req, res) => {
 - **最重要**: 必ず「店名」(${restaurant.name})と「施設名」(${restaurant.facility})の両方を文章に含めてください。省略は許可しません。
 
 # やってはいけないこと
-- **夜景や景色についての言及は絶対にしないでください。**
+- **夜景や景色、天気、時間帯についての言及は絶対にしないでください。**
 `;
-        }
 
         const finalPrompt = basePrompt + scenarioPrompt + constraintsPrompt + "\nそれでは、上記のすべてを考慮して、最高のメッセージを生成してください:";
         
