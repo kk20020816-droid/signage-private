@@ -99,7 +99,23 @@ app.get('/api/generate-message', async (req, res) => {
 乗客のクルーズ体験をより豊かにするため、付近の魅力的な飲食店を提案するメッセージを生成してください。
 `;
         
-        let scenarioPrompt = `
+        let scenarioPrompt;
+        if (hours >= 19) {
+            // 19時以降のシナリオ
+            scenarioPrompt = `
+# メッセージ生成のシナリオと心構え
+- **クルーズ後の特別な時間**を過ごせる飲食店を提案し、乗客の満足度を最大化するメッセージを生成します。
+- クルーズの素晴らしい思い出を語り合いながら、美味しい食事を楽しめる場所として、以下の飲食店をおすすめしてください。
+- **推薦するお店**:
+  - 店名: ${restaurant.name}
+  - 施設名: ${restaurant.facility}
+  - ジャンル: ${restaurant.cuisine}
+- **お手本**: 「クルーズの後は、${restaurant.facility}の${restaurant.cuisine}『${restaurant.name}』で、素敵な思い出を語り合ってみてはいかがでしょうか。」
+- このお手本を参考に、**ジャンル情報も自然に含めつつ**、魅力的で簡潔な推薦メッセージを生成してください。
+`;
+        } else {
+            // 19時より前のシナリオ
+            scenarioPrompt = `
 # メッセージ生成のシナリオと心構え
 - クルーズ体験の前後に楽しめる素晴らしい食事場所として、付近の飲食店をおすすめし、乗客の満足度を高めるメッセージを生成します。
 - **推薦するお店**:
@@ -109,6 +125,7 @@ app.get('/api/generate-message', async (req, res) => {
 - **お手本**: 「クルーズの後は、${restaurant.facility}の${restaurant.cuisine}『${restaurant.name}』で、素敵な余韻に浸ってみてはいかがでしょうか。」
 - このお手本を参考に、**ジャンル情報も自然に含めつつ**、魅力的で簡潔な推薦メッセージを生成してください。
 `;
+        }
 
         let constraintsPrompt = `
 # 制約
