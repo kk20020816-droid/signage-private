@@ -120,11 +120,18 @@ app.get('/api/generate-message', async (req, res) => {
             scenarioPrompt = `
 # メッセージ生成のシナリオと心構え
 - クルーズ体験の前後に楽しめる素晴らしい食事場所として、付近の飲食店をおすすめし、乗客の満足度を高めるメッセージを生成します。
+- **現在の天気**: ${weather}
+- **現在の気温**: ${temperature}
+- **現在の時間帯**: ${timeOfDay}
 - **推薦するお店**:
   - 店名: ${restaurant.name}
   - 施設名: ${restaurant.facility}
   - ジャンル: ${restaurant.cuisine}
-- **お手本**: 「クルーズの後は、${restaurant.facility}の${restaurant.cuisine}『${restaurant.name}』で、素敵な余韻に浸ってみてはいかがでしょうか。」
+- クルーズへの期待感や、出航前のワクワク感を高めるような、ポジティブなメッセージを生成してください。
+- 天候が良い場合は、クルーズの快適さを強調し、天候が優れない場合は、船内での楽しみや温かさを強調してください。
+- 「${timeOfDay}の${weather}で、気温は${temperature}です。快適なクルーズをお楽しみください。」のような天気と気温を含んだ導入をしてください。
+- その後に、おすすめのお店を自然に紹介する形式でお願いします。
+- **お手本**: 「${timeOfDay}の${weather}で、気温は${temperature}です。本日は絶好のクルーズ日和ですね！ご乗船前には、${restaurant.facility}の${restaurant.cuisine}『${restaurant.name}』で腹ごしらえはいかがでしょうか。」
 - このお手本を参考に、**ジャンル情報も自然に含めつつ**、魅力的で簡潔な推薦メッセージを生成してください。
 `;
         }
@@ -136,9 +143,6 @@ app.get('/api/generate-message', async (req, res) => {
 - 感嘆符(!)や絵文字は使わないでください。
 - 必ず丁寧語を使用してください。タメ口や外国語は絶対に使わないでください。
 - **最重要**: 必ず「店名」(${restaurant.name})と「施設名」(${restaurant.facility})の両方を文章に含めてください。省略は許可しません。
-
-# やってはいけないこと
-- **夜景や景色、天気、時間帯についての言及は絶対にしないでください。**
 `;
 
         const finalPrompt = basePrompt + scenarioPrompt + constraintsPrompt + "\nそれでは、上記のすべてを考慮して、最高のメッセージを生成してください:";
